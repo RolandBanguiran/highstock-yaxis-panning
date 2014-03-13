@@ -1,5 +1,5 @@
 /**
- * Highstock plugin for moving the chart using right mouse button.
+ * Highstock plugin for moving the chart using righ mouse button.
  *
  * Author: Roland Banguiran
  * Email: banguiran@gmail.com
@@ -22,78 +22,48 @@
 
         var chart = this,
             container = chart.container,
-            xAxis = chart.xAxis[0],
             yAxis = chart.yAxis[0],
-            downXPixels,
             downYPixels,
-            downXValue,
             downYValue,
             isDragging = false,
-            hasDragged = 0,
-            preventContextMenu;
+            hasDragged = 0;
 
         addEvent(container, 'mousedown', function (e) {
-            if (e.which === 3) {
-                body.style.cursor = 'move';
+            body.style.cursor = 'move';
 
-                downXPixels = chart.pointer.normalize(e).chartX;
-                downYPixels = chart.pointer.normalize(e).chartY;
+            downYPixels = chart.pointer.normalize(e).chartY;
+            downYValue = yAxis.toValue(downYPixels);
 
-                downXValue = xAxis.toValue(downXPixels);
-                downYValue = yAxis.toValue(downYPixels);
-
-                isDragging = true;
-
-                doc.removeEventListener('contextmenu', preventContextMenu, false);
-            }
+            isDragging = true;
         });
 
         addEvent(doc, 'mousemove', function (e) {
             if (isDragging) {
-                var dragXPixels = chart.pointer.normalize(e).chartX,
-                    dragYPixels = chart.pointer.normalize(e).chartY,
-                    dragXValue = xAxis.toValue(dragXPixels),
+                var dragYPixels = chart.pointer.normalize(e).chartY,
                     dragYValue = yAxis.toValue(dragYPixels),
 
-                    xExtremes = xAxis.getExtremes(),
                     yExtremes = yAxis.getExtremes(),
-
-                    xUserMin = xExtremes.userMin,
-                    xUserMax = xExtremes.userMax,
-                    xDataMin = xExtremes.dataMin,
-                    xDataMax = xExtremes.dataMax,
 
                     yUserMin = yExtremes.userMin,
                     yUserMax = yExtremes.userMax,
                     yDataMin = yExtremes.dataMin,
                     yDataMax = yExtremes.dataMax,
 
-                    xMin = xUserMin !== undefined ? xUserMin : xDataMin,
-                    xMax = xUserMax !== undefined ? xUserMax : xDataMax,
-
                     yMin = yUserMin !== undefined ? yUserMin : yDataMin,
                     yMax = yUserMax !== undefined ? yUserMax : yDataMax,
 
-                    newMinX,
-                    newMaxX,
                     newMinY,
                     newMaxY;
 
                 // determine if the mouse has moved more than 10px
-                hasDragged = Math.sqrt(Math.pow(downXPixels - dragXPixels, 2) + Math.pow(downYPixels - dragYPixels, 2));
+                hasDragged = Math.abs(downYPixels - dragYPixels);
 
                 if (hasDragged > 10) {
-
-                    newMinX = xMin - (dragXValue - downXValue);
-                    newMaxX = xMax - (dragXValue - downXValue);
 
                     newMinY = yMin - (dragYValue - downYValue);
                     newMaxY = yMax - (dragYValue - downYValue);
 
-                    xAxis.setExtremes(newMinX, newMaxX, true, false);
                     yAxis.setExtremes(newMinY, newMaxY, true, false);
-
-                    doc.addEventListener('contextmenu', preventContextMenu, false);
                 }
             }
         });
@@ -103,9 +73,5 @@
                 isDragging = false;
             }
         });
-
-        preventContextMenu = function (e) {
-            e.preventDefault();
-        };
     });
 }(Highcharts));
