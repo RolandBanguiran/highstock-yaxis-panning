@@ -21,6 +21,9 @@
         proceed.apply(this, Array.prototype.slice.call(arguments, 1));
 
         var chart = this,
+            options = chart.options,
+            panning = options.chart.panning || true,
+            zoomType = options.chart.zoomType || '',
             container = chart.container,
             yAxis = chart.yAxis[0],
             downYPixels,
@@ -28,50 +31,53 @@
             isDragging = false,
             hasDragged = 0;
 
-        addEvent(container, 'mousedown', function (e) {
-            body.style.cursor = 'move';
+        if (panning && zoomType === '') {
 
-            downYPixels = chart.pointer.normalize(e).chartY;
-            downYValue = yAxis.toValue(downYPixels);
+            addEvent(container, 'mousedown', function (e) {
+                body.style.cursor = 'move';
 
-            isDragging = true;
-        });
+                downYPixels = chart.pointer.normalize(e).chartY;
+                downYValue = yAxis.toValue(downYPixels);
 
-        addEvent(doc, 'mousemove', function (e) {
-            if (isDragging) {
-                var dragYPixels = chart.pointer.normalize(e).chartY,
-                    dragYValue = yAxis.toValue(dragYPixels),
+                isDragging = true;
+            });
 
-                    yExtremes = yAxis.getExtremes(),
+            addEvent(doc, 'mousemove', function (e) {
+                if (isDragging) {
+                    var dragYPixels = chart.pointer.normalize(e).chartY,
+                        dragYValue = yAxis.toValue(dragYPixels),
 
-                    yUserMin = yExtremes.userMin,
-                    yUserMax = yExtremes.userMax,
-                    yDataMin = yExtremes.dataMin,
-                    yDataMax = yExtremes.dataMax,
+                        yExtremes = yAxis.getExtremes(),
 
-                    yMin = yUserMin !== undefined ? yUserMin : yDataMin,
-                    yMax = yUserMax !== undefined ? yUserMax : yDataMax,
+                        yUserMin = yExtremes.userMin,
+                        yUserMax = yExtremes.userMax,
+                        yDataMin = yExtremes.dataMin,
+                        yDataMax = yExtremes.dataMax,
 
-                    newMinY,
-                    newMaxY;
+                        yMin = yUserMin !== undefined ? yUserMin : yDataMin,
+                        yMax = yUserMax !== undefined ? yUserMax : yDataMax,
 
-                // determine if the mouse has moved more than 10px
-                hasDragged = Math.abs(downYPixels - dragYPixels);
+                        newMinY,
+                        newMaxY;
 
-                if (hasDragged > 10) {
+                    // determine if the mouse has moved more than 10px
+                    hasDragged = Math.abs(downYPixels - dragYPixels);
 
-                    newMinY = yMin - (dragYValue - downYValue);
-                    newMaxY = yMax - (dragYValue - downYValue);
+                    if (hasDragged > 10) {
 
-                    yAxis.setExtremes(newMinY, newMaxY, true, false);
+                        newMinY = yMin - (dragYValue - downYValue);
+                        newMaxY = yMax - (dragYValue - downYValue);
+
+                        yAxis.setExtremes(newMinY, newMaxY, true, false);
+                    }
                 }
-            }
-        });
+            });
 
-        addEvent(doc, 'mouseup', function () {
-            if (isDragging) {
-                isDragging = false;
-            }
-        });
+            addEvent(doc, 'mouseup', function () {
+                if (isDragging) {
+                    isDragging = false;
+                }
+            });
+        }
     });
 }(Highcharts));
