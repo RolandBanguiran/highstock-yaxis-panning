@@ -1,4 +1,4 @@
-highstock-movable-chart
+Y-Axis Panning
 =======================
 
-Using this plugin lets the user freely drag the chart in both Y and X axis using right mouse button.
+Using this plugin will enable Y-Axis panning.
