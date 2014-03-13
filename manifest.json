@@ -1,0 +1,26 @@
+{
+    "name": "Y-Axis Panning",
+    "version": "1.0.0",
+    "title": "Highstock Y-Axis Panning",
+    "demo": [
+        "http://jsfiddle.net/RolandBanguiran/8EmeV/"
+    ],
+    "author": {
+        "name": "Roland Banguiran",
+        "url": "http://sg.linkedin.com/in/rolandbanguiran"
+    },
+    "licenses": [
+        {
+            "type": "GPL v2",
+            "url": "https://github.com/RolandBanguiran/highstock-yaxis-panning/blob/master/LICENSE"
+        }
+    ],
+    "description": "Using this plugin will enable Y-Axis panning.",
+    "keywords": [
+     "yAxis",
+     "panning"
+    ],
+    "dependencies": {
+        "Highcharts": ">=3.0.0"
+    }
+}
